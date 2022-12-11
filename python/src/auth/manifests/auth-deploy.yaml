@@ -1,0 +1,45 @@
+#  Manifest file needs 4 required fields: apiVersion, kind, metadata, and spec
+
+apiVersion: apps/v1
+# Workload Resources/Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+kind: Deployment
+metadata:
+  # A deployment named "auth" is created
+  name: auth
+  labels:
+    app: auth
+# Deployment specific
+spec:
+  # creates 2 replicated pods
+  replicas: 2
+  # defines what pod to manage and how
+  selector:
+    matchLabels:
+      # value must matched the label inside template
+      app: auth
+  strategy:
+    # RollingUpdate Deployments support running multiple versions of an application at the same time. (default)
+    # VS killing all pods before deploying new release
+    type: RollingUpdate
+    rollingUpdate:
+      # Up to 3 pods can be created during rollingUpdate
+      maxSurge: 3
+  # configuration for each individual pods
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      # Pull the image from docker hub and deploy it to k8s
+      containers:
+        - name: auth
+          image: sidhlee/auth
+          ports:
+            - containerPort: 5050
+          envFrom:
+            - configMapRef:
+                # must match metadata.name in ConfigMap manifest
+                name: auth-configmap
+            - secretRef:
+                # metadata.name in Secret manifest
+                name: auth-secret

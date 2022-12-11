@@ -1,0 +1,11 @@
+# configmap is for non-sensitive environment variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-configmap
+data:
+  # these will be available as env vars within containers
+  MYSQL_HOST: host.minikube.internal
+  MYSQL_USER: auth_user
+  MYSQL_DB: auth
+  MYSQL_PORT: '3306'
