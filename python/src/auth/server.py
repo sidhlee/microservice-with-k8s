@@ -1,4 +1,8 @@
-import jwt, datetime, os
+import os
+import datetime
+from dataclasses import dataclass
+
+import jwt
 from flask import Flask, request
 from flask_mysqldb import MySQL
 
@@ -16,6 +20,14 @@ server.config["MYSQL_DB"] = os.environ.get("MYSQL_DB")
 server.config["MYSQL_PORT"] = os.environ.get("MYSQL_PORT")
 
 PORT = 5050
+
+
+@dataclass
+class AccessToken:
+    username: str
+    exp: datetime
+    iat: datetime
+    admin: bool
 
 
 class AuthResponse:
@@ -50,21 +62,21 @@ def login():
         if auth.username != email or auth.password != password:
             return AuthResponse.INVALID_CREDENTIALS
         else:
-            return createJWT(auth.username, os.environ.get("JWT_SECRET"), True)
+            return create_jwt(auth.username, os.environ.get("JWT_SECRET"), True)
     else:
         return AuthResponse.INVALID_CREDENTIALS
 
 
-def createJWT(username, secret, is_admin):
+def create_jwt(username: str, secret: str, is_admin=False):
+    token = AccessToken(
+        username=username,
+        exp=datetime.datetime.now(tz=datetime.timezone.utc)
+        + datetime.timedelta(days=1),
+        iat=datetime.datetime.utcnow(),
+        admin=is_admin,
+    )
     return jwt.encode(
-        {
-            "username": username,
-            "exp": datetime.datetime.now(tz=datetime.timezone.utc)
-            + datetime.timedelta(days=1),
-            # issued at
-            "iat": datetime.datetime.utcnow(),
-            "admin": is_admin,
-        },
+        token.__dict__,
         secret,
         algorithm="HS256",
     )
@@ -83,7 +95,7 @@ def validate():
         decoded = jwt.decode(
             encoded_jwt, os.environ.get("JWT_SECRET", algorithm=["HS256"])
         )
-    except:
+    except Exception:
         return AuthResponse.NOT_AUTHORIZED
 
     return decoded, 200
