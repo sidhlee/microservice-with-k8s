@@ -139,22 +139,36 @@ After creating `Dockerfile` and a repository from the docker hub, run the follow
  => => writing image sha256:0ed848774eca280f52c768c4  0.0s
 
 Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
-(python-Zs0VLZKm-py3.10) ➜  auth git:(main) ✗ docker tag 0ed848774eca280f52c768c4 sidhlee/auth:latest
+```
 
-(python-Zs0VLZKm-py3.10) ➜  auth git:(main) ✗ docker image
+Now tag the image hash with the docker hub repo you created.
+
+```bash
+(python-Zs0VLZKm-py3.10) ➜ auth git:(main) ✗ docker tag 0ed848774eca280f52c768c4 sidhlee/auth:latest
+```
+
+Check the image you just built:
+
+```bash
+(python-Zs0VLZKm-py3.10) ➜ auth git:(main) ✗ docker image
 ls
-REPOSITORY                    TAG         IMAGE ID       CREATED             SIZE
-sidhlee/auth                  latest      0ed848774eca   About an hour ago   466MB
-docker101tutorial             latest      f555e4b975e0   2 weeks ago         27.5MB
-alpine/git                    latest      9793ee61fc75   2 weeks ago         43.4MB
-gcr.io/k8s-minikube/kicbase   v0.0.36     c87ac1e75807   6 weeks ago         1.02GB
-<none>                        <none>      47de9cc6479e   20 months ago       188MB
-<none>                        <none>      c37bbdcdc117   20 months ago       175MB
-<none>                        <none>      bf1504586cf6   20 months ago       175MB
-<none>                        <none>      a59cc6169293   20 months ago       199MB
-docker/getting-started        latest      3ba8f2ff0727   21 months ago       27.9MB
-node                          13-alpine   8216bf4583a5   2 years ago         114MB
-(python-Zs0VLZKm-py3.10) ➜  auth git:(main) ✗ docker push s
+REPOSITORY TAG IMAGE ID CREATED SIZE
+sidhlee/auth latest 0ed848774eca About an hour ago 466MB
+docker101tutorial latest f555e4b975e0 2 weeks ago 27.5MB
+alpine/git latest 9793ee61fc75 2 weeks ago 43.4MB
+gcr.io/k8s-minikube/kicbase v0.0.36 c87ac1e75807 6 weeks ago 1.02GB
+<none> <none> 47de9cc6479e 20 months ago 188MB
+<none> <none> c37bbdcdc117 20 months ago 175MB
+<none> <none> bf1504586cf6 20 months ago 175MB
+<none> <none> a59cc6169293 20 months ago 199MB
+docker/getting-started latest 3ba8f2ff0727 21 months ago 27.9MB
+node 13-alpine 8216bf4583a5 2 years ago 114MB
+```
+
+Finally, push the image to the docker hub repo :
+
+```bash
+(python-Zs0VLZKm-py3.10) ➜ auth git:(main) ✗ docker push s
 idhlee/auth:latest
 The push refers to repository [docker.io/sidhlee/auth]
 a3bd0e3d30a3: Pushed
@@ -168,13 +182,22 @@ a7fc70a8dbf0: Layer already exists
 49fa38a13b0d: Layer already exists
 6b1c0df0b436: Layer already exists
 latest: digest: sha256:2023152c7ac044548004320992d6b5a68fe99779055f6b527a3b89a0efb86c6f size: 2419
+
 ```
+
+If you are getting `denied: requested access to the resource is denied` error, you need to run `docker login` with your docker hub credentials.
+
+You can pull the image from the hub using `docker pull sidhlee/auth:latest` command, but we are going to use minikube to orchestrate the docker images.
 
 ## Kubernetes Manifests
 
 A Kubernetes manifest is a YAML file that describes each resource (eg. deployment, services, pods, etc..) you want to create, and how you want those resources to run inside a cluster.
 
+Currently, if you run `k9s` in terminal, there is no clusters running.
+
 To allow manifest files to interact with docker hub and create our application, run the following command inside the `manifests/` folder:
+
+Make sure `minikube` is running before using applying the manifest with `kubectl`. Otherwise, you would get "The connection to the server localhost:8080 was refused - did you specify the right host or port?" error.
 
 ```bash
 ➜  manifests git:(main) ✗ kubectl apply -f ./
@@ -187,6 +210,8 @@ service/auth unchanged
 
 ## Advantages of using K8S
 
+With Kubernetes, we can cluster together multiple containerized services and easily orchestrate the deployment and management of these services within the cluster using the Kubernetes Objects.
+
 - Automates running/recycling many containers
 - Auto-detects failures in individual pods and maintains the predefined scale.
 - Manual scaling is as easy as running a command. It also configures load balancer and registers new pods for you.
@@ -194,5 +219,5 @@ service/auth unchanged
 
 ## Kubectl and minikube
 
-`kubectl` CLI makes necessary Kubernetes AP calls for running CRUD operation on your K8S objects. This is because your deployments usually live inside a cloud environment.
+`kubectl` CLI makes necessary Kubernetes API calls for running CRUD operation on your K8S objects. This is because your deployments usually live inside a cloud environment.
 `minikube` allows you to run clusters locally for development.

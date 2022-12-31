@@ -1,16 +1,19 @@
 #  Manifest file needs 4 required fields: apiVersion, kind, metadata, and spec
 
+# Which version of the Kubernetes API you're using to create this object.
 apiVersion: apps/v1
+# What kind of object you want to create
 # Workload Resources/Deployments: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 kind: Deployment
+# Data that helps uniquely identify the object
 metadata:
   # A deployment named "auth" is created
   name: auth
   labels:
     app: auth
-# Deployment specific
+# What state you desire for the object - different based on the object kind
 spec:
-  # creates 2 replicated pods
+  # Number of desired pods - not just backups
   replicas: 2
   # defines what pod to manage and how
   selector:
@@ -35,6 +38,7 @@ spec:
         - name: auth
           image: sidhlee/auth
           ports:
+            # port that the app is running from
             - containerPort: 5050
           envFrom:
             - configMapRef:

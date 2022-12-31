@@ -1,5 +1,6 @@
 # configmap is for non-sensitive environment variables
 apiVersion: v1
+# Creates ConfigMap object
 kind: ConfigMap
 metadata:
   name: auth-configmap
