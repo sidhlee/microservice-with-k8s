@@ -1,7 +1,13 @@
 import os
 import requests
 from flask import Request
-from auth.server import AuthResponse
+
+
+# TODO: put this in a common lib
+class AuthResponse:
+    MISSING_CREDENTIALS = ("missing credentials", 401)
+    INVALID_CREDENTIALS = ("invalid credentials", 401)
+    NOT_AUTHORIZED = ("not authorized", 403)
 
 
 def login(request: Request):

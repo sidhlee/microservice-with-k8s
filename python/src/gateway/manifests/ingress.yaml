@@ -1,0 +1,34 @@
+# Ingress allows outside client to reach the endpoints in Kubernetes cluster
+# It defines how to route each available path to which services
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway-ingress
+  annotations:
+    nginx.ingress.kubernetes.ip/proxy-body-size: '0'
+    nginx.ingress.kubernetes.ip/proxy-read-timeout: '600'
+    nginx.ingress.kubernetes.ip/proxy-send-timeout: '600'
+spec:
+  rules:
+    # we will map this address to the localhost by adding
+    # 127.0.0.1 mp3converter.com to `/etc/hosts` file (need sudo)
+    # and tunnel the request to the minikube
+    - host: mp3converter.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway
+                port:
+                  number: 8080
+# You need to enable ingress addon from the minikube
+# minikube addons list - lists all addons
+# minikube addons enable ingress -enable ingress addon
+
+# After enabling ingress addon, run "minikube tunnel" to make
+# ingress resources available at localhost
+
+# With minikube tunnel process running, any request to the localhost
+# will be routed to the ingress from minikube

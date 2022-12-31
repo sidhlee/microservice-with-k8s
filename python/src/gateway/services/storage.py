@@ -3,7 +3,7 @@ from pika.spec import PERSISTENT_DELIVERY_MODE
 import json
 from gridfs import GridFS
 from pika.adapters.blocking_connection import BlockingChannel
-from auth.server import AccessToken
+from server import AccessToken
 
 
 def queue_upload_video(file, fs: GridFS, channel: BlockingChannel, token: AccessToken):

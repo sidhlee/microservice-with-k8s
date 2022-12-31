@@ -1,17 +1,28 @@
+import os
+import datetime
 import json
+from dataclasses import dataclass
 
 import gridfs
 import pika
 from flask import Flask, request
 from flask_pymongo import PyMongo
 
-from auth.server import AccessToken
-from gateway.interfaces import auth_clients
-from gateway.services import storage
+from interfaces import auth_clients
+from services import storage
+
+
+# TODO: this is copied from auth.server.py. Make a separate package.
+@dataclass
+class AccessToken:
+    username: str
+    exp: datetime
+    iat: datetime
+    admin: bool
 
 
 server = Flask(__name__)
-server.config["MONGO_URI"] = "mongodb://host.minikube.internal:27017/videos"
+server.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 
 mongo = PyMongo(server)
 
