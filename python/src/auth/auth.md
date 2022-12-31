@@ -220,4 +220,6 @@ With Kubernetes, we can cluster together multiple containerized services and eas
 ## Kubectl and minikube
 
 `kubectl` CLI makes necessary Kubernetes API calls for running CRUD operation on your K8S objects. This is because your deployments usually live inside a cloud environment.
-`minikube` allows you to run clusters locally for development.
+`minikube` allows you to run clusters locally for development, and `kubectl` command will be directed towards the local clusters.
+
+- `minikube service auth --url` will return the address you can connect to the auth service running inside minikube.

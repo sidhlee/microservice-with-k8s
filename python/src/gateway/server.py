@@ -7,7 +7,7 @@ from flask_pymongo import PyMongo
 
 from auth.server import AccessToken
 from gateway.interfaces import auth_clients
-from storage_service import util
+from gateway.services import storage
 
 
 server = Flask(__name__)
@@ -61,7 +61,7 @@ def upload():
 
         # This loop only runs once (for now)
         for file in request.files.values():
-            err = util.upload(file, fs, channel, token)
+            err = storage.queue_upload_video(file, fs, channel, token)
 
             if err:
                 return err

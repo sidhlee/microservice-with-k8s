@@ -6,7 +6,10 @@ from pika.adapters.blocking_connection import BlockingChannel
 from auth.server import AccessToken
 
 
-def upload(file, fs: GridFS, channel: BlockingChannel, token: AccessToken):
+def queue_upload_video(file, fs: GridFS, channel: BlockingChannel, token: AccessToken):
+    '''
+    Put the video file in MongoDB and publish a message to the queue
+    '''
     try:
         file_id = fs.put(file)
     except Exception:
@@ -31,6 +34,6 @@ def upload(file, fs: GridFS, channel: BlockingChannel, token: AccessToken):
             ),
         )
     except Exception:
-        # rollback uploaded image
+        # rollback uploaded image because downstream service will not be able to process them
         fs.delete(file_id)
         return "internal server error", 500

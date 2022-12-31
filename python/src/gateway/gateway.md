@@ -18,4 +18,4 @@
 - Producer: your application that sends the message to the broker
 - Broker (RabbitMQ): service that takes the message to the exchange and distributes them into different queues.
 - Consumer: worker process that takes the message from the RabbitMQ queue.
-- By default, RabbitMQ will evenly distribute the messages in the queue to multiple consumers in round-robin fashion. This way, we can scale up our system easily by adding more consumers
+- By default, RabbitMQ will evenly distribute (dispatch) the messages in the queue to multiple consumers in round-robin fashion. This way, we can scale up our system easily by adding more consumers
