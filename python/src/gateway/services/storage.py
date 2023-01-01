@@ -26,6 +26,7 @@ def queue_upload_video(file, fs: GridFS, channel: BlockingChannel, token: Access
             # Be passing an empty exchange name, each queue gets bound to the default exchange
             # with the queue name being the routing key
             exchange="",
+            # You will need to add a new queue named "video"
             routing_key="video",
             body=json.dumps(message),
             properties=pika.BasicProperties(

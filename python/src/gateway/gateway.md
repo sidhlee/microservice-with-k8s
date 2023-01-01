@@ -41,3 +41,4 @@ After adding all the necessary manifest files for creating Kubernetes objects, y
 - `minikube tunnel` redirects requests made to the localhost to the ingress resources. For this, you need to enable ingress addon for minikube.
 - `minikube dashboard` opens up a dashboard in a browser where you can easily manage the Kubernetes workload. You can also monitor and manage the deployments on `k9s`.
 - If the deployment is not running successfully due to errors, Kubernetes will retry running the deployment with exponential backoff. In this case, you can scale down the deployment by running `kubectl scale deployment --replicas=0 <service>` and fix the issue.
+- If you edited immutable manifest (eg. pvc), you can delete the resources created and re-apply the manifests by running `kubectl delete -f ./`
